@@ -28,16 +28,16 @@ export default {
       textInfoData: {
         id: undefined,
         batchNo: '',
-        projectName: '',
+        featureName: '',
         buildEnv: '',
         buildType: '',
         caseNum: '',
         newlyFailNum: '',
         keepFailingNum: '',
-        projectStartTime: '',
-        projectEndTime: '',
-        projectDateTime: '',
-        projectDuration: ''
+        startTime: '',
+        endTime: '',
+        dateTime: '',
+        duration: ''
       },
       // 饼图模块数据
       pieChartData: {
@@ -58,7 +58,7 @@ export default {
       info().then(response => {
         this.textInfoData.id = response.data.id
         this.textInfoData.batchNo = response.data.batchNo
-        this.textInfoData.projectName = response.data.projectName
+        this.textInfoData.featureName = response.data.featureName
         this.textInfoData.buildEnv = response.data.buildEnv
         this.textInfoData.buildType = response.data.buildType
         this.textInfoData.caseNum = response.data.caseNum
@@ -67,10 +67,10 @@ export default {
         this.pieChartData.casePassRate = response.data.casePassRate
         this.textInfoData.newlyFailNum = response.data.newlyFailNum
         this.textInfoData.keepFailingNum = response.data.keepFailingNum
-        this.textInfoData.projectDateTime = parseTime(response.data.projectStartTime, '{y}/{m}/{d}')
-        this.textInfoData.projectStartTime = parseTime(response.data.projectStartTime, '{h}:{i}:{s}')
-        this.textInfoData.projectEndTime = parseTime(response.data.projectEndTime, '{h}:{i}:{s}')
-        this.textInfoData.projectDuration = response.data.projectDuration / 1000
+        this.textInfoData.dateTime = parseTime(response.data.startTime, '{y}/{m}/{d}')
+        this.textInfoData.startTime = parseTime(response.data.startTime, '{h}:{i}:{s}')
+        this.textInfoData.endTime = parseTime(response.data.endTime, '{h}:{i}:{s}')
+        this.textInfoData.duration = response.data.duration / 1000
         this.loading = false
         this.flag = true
       }).catch(

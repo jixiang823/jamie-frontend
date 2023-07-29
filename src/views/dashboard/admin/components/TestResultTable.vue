@@ -7,21 +7,21 @@
             {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column label="项目名称" width="155" align="center">
+        <el-table-column label="业务名称" width="155" align="center">
           <template slot-scope="scope">
-            {{ scope.row.projectName }}
+            <span>{{ scope.row.storyName }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="模块名称" width="155" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.moduleName }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="用例名称" width="300" align="center">
+        <el-table-column label="用例名称" width="350" align="center">
           <template slot-scope="scope">
             <div class="text-wrapper">
-              <span class="link-type text" @click="getCaseDetail(scope.row)">{{ scope.row.caseName }} ({{ scope.row.caseStepNum }})</span>
+              <span class="link-type text" @click="getCaseDetail(scope.row)">{{ scope.row.caseName }}</span>
             </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="用例步骤" width="105" align="center">
+          <template slot-scope="scope">
+            <el-tag effect="plain" size="medium" type="normal" @click="getCaseDetail(scope.row)">{{ scope.row.caseStepNum }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="用例作者" width="110" align="center">
@@ -29,19 +29,19 @@
             <span>{{ scope.row.caseOwner }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="用例状态" width="110" align="center" :filters="[{ text: '测试通过', value: 1 }, { text: '新增失败', value: 2 }, { text: '持续失败', value: 3 }]" :filter-method="filterTag" filter-placement="bottom-end">
+          <template slot-scope="scope">
+            <el-tag effect="plain" size="medium" :type="scope.row.caseResult | statusFilter" @click="getCaseDetail(scope.row)">{{ scope.row.caseResult ? "测试通过": scope.row.newlyFail ? "新增失败":"持续失败" }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="执行时间" width="165" align="center">
           <template slot-scope="scope">
-            <span>{{ dateFormat(scope.row.caseStartTime) }}</span>
+            <span>{{ dateFormat(scope.row.startTime) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="请求耗时" width="100" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.caseDuration / 1000 + 's' }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="执行结果" width="110" align="center" :filters="[{ text: '测试通过', value: 1 }, { text: '新增失败', value: 2 }, { text: '持续失败', value: 3 }]" :filter-method="filterTag" filter-placement="bottom-end">
-          <template slot-scope="scope">
-            <el-tag effect="plain" size="medium" :type="scope.row.caseResult | statusFilter" @click="getCaseDetail(scope.row)">{{ scope.row.caseResult ? "测试通过": scope.row.newlyFail ? "新增失败":"持续失败" }}</el-tag>
+            <span>{{ scope.row.duration / 1000 + 's' }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -50,7 +50,7 @@
         <!--时间轴搭配折叠面板-->
         <el-timeline>
           <!--展示API请求的时间-->
-          <el-timeline-item v-for="(item, i) in detailList" :key="i" :timestamp="dateFormat(detailList[i].apiStartTime)" :color="detailList[i].apiResult ? '#67C23A':'#F56C6C'" placement="top">
+          <el-timeline-item v-for="(item, i) in detailList" :key="i" :timestamp="dateFormat(detailList[i].startTime)" :color="detailList[i].apiResult ? '#67C23A':'#F56C6C'" placement="top">
             <el-collapse>
               <el-collapse-item>
                 <template slot="title" class="collapse-title">
@@ -77,7 +77,7 @@
                       </div>
                       <div class="ml-3 text-sm">
                         <span>耗时: </span>
-                        <span class="text-green-6">{{ item.apiDuration / 1000 }}s</span>
+                        <span class="text-green-6">{{ item.duration / 1000 }}s</span>
                       </div>
                     </div>
                   </div>
@@ -144,8 +144,8 @@ export default {
         pageNum: 1,
         pageSize: 20,
         batchNo: undefined,
+        storyName: undefined,
         caseName: undefined,
-        moduleName: undefined,
         caseOwner: undefined,
         caseResult: undefined,
         sort: undefined
@@ -365,7 +365,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 250px; /*文本区域宽度*/
 }
 
 .text {

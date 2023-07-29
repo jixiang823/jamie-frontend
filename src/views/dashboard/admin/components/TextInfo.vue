@@ -2,13 +2,13 @@
   <el-row :gutter="32">
     <el-col :xs="24" :sm="24" :lg="24">
       <h1 class="title_h1">
-        API自动化测试报告
+        {{ textInfoData.featureName }}
       </h1>
       <h2 class="title_h2">
         {{ textInfoData.buildEnv }}环境 {{ textInfoData.batchNo }}
       </h2>
       <h2 class="title_h3">
-        {{ textInfoData.projectStartTime }} - {{ textInfoData.projectEndTime }} ({{ textInfoData.projectDuration }}s)
+        {{ textInfoData.startTime }} - {{ textInfoData.endTime }} ({{ textInfoData.duration }}s)
       </h2>
     </el-col>
     <el-col :xs="24" :sm="24" :lg="24">

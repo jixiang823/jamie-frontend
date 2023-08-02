@@ -1,85 +1,119 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="Activity time">
-        <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;" />
-        </el-col>
-        <el-col :span="2" class="line">-</el-col>
-        <el-col :span="11">
-          <el-time-picker v-model="form.date2" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Instant delivery">
-        <el-switch v-model="form.delivery" />
-      </el-form-item>
-      <el-form-item label="Activity type">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="Online activities" name="type" />
-          <el-checkbox label="Promotion activities" name="type" />
-          <el-checkbox label="Offline activities" name="type" />
-          <el-checkbox label="Simple brand exposure" name="type" />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="Resources">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="Sponsor" />
-          <el-radio label="Venue" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
+      <el-form-item label="脚本路径" :rules="rules">
+        <el-input v-model="form.scriptPath" placeholder="请输入脚本所在服务器的绝对路径" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
+        <el-button type="primary" @click="runScript()">运行</el-button>
+      </el-form-item>
+      <el-form-item label="执行进度">
+        <div class="console" v-html="html" />
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+
+import { run } from '@/api/script'
+import AnsiUp from 'ansi_up'
 export default {
   data() {
     return {
+      ansi: undefined, // 执行脚本后展示的日志
+      content: '', // 日志内容
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      }
+        scriptPath: ''
+      },
+      rules: [
+        { required: true, message: '脚本路径不能为空' }
+      ],
+      loading: true
     }
   },
+  computed: {
+    html() {
+      return this.ansi.ansi_to_html(this.content).replace(/\n/gm, '<br>')
+    }
+  },
+  beforeMount() {
+    this.ansi = new AnsiUp()
+  },
+  mounted() {
+    this.initWebSocket()
+  },
+  destroyed: function() {
+    this.closeWebSocket()
+  },
+  updated() {
+    // 每次页面渲染完之后滚动条在最底部
+    this.$nextTick(() => {
+      const container = this.$el.querySelector('.console')
+      container.scrollTop = container.scrollHeight
+    })
+  },
   methods: {
-    onSubmit() {
-      this.$message('submit!')
+    initWebSocket: function() {
+      this.websocket = new WebSocket('ws://localhost:9123/websocket') // 建立连接
+      this.websocket.onopen = this.openWebSocket
+      this.websocket.onerror = this.errorWebSocket
+      this.websocket.onmessage = this.messageWebSocket
+      this.websocket.onclose = this.closeWebSocket
     },
-    onCancel() {
-      this.$message({
-        message: 'cancel!',
+    // 连接成功后调用
+    openWebSocket: function() {
+      console.log('WebSocket连接成功')
+    },
+    // 发生错误时调用
+    errorWebSocket: function(e) {
+      console.log('WebSocket连接发生错误')
+    },
+    // 接收后端消息
+    messageWebSocket: function(e) {
+      this.content += e.data
+    },
+    // 关闭连接
+    closeWebSocket: function(e) {
+      console.log('connection closed (' + e.code + ')')
+    },
+    runScript() {
+      this.loading = true
+      this.$confirm('该脚本将被执行, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        this.ansi = new AnsiUp() // 每次执行前初始化
+        run(this.form).then(response => {
+          this.$message({
+            message: '脚本正在运行,请稍后!',
+            type: 'success'
+          })
+        }).catch(() => {
+          setTimeout(() => {
+            this.loading = false
+          }, 1000)
+        })
       })
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.console {
+  height: 470px;
+  font-family: "微软雅黑";
+  font-size: 14px;
+  font-weight: bold;
+  text-align: left;
+  background-color: #121212;
+  color: rgba(255, 255, 255, 60%);
+  overflow-y: auto;
+  padding: 5px 20px;
+}
 .line{
   text-align: center;
 }
 </style>
-

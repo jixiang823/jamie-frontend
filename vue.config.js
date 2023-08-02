@@ -40,6 +40,7 @@ module.exports = {
       [process.env.VUE_APP_BASE_API]: {
         target: 'http://localhost:9123',
         changeOrigin: true, // 配置跨域
+        ws: true, // 用于支持websocket,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }

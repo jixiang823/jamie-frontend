@@ -7,7 +7,7 @@
       <el-form-item>
         <el-button type="primary" @click="runScript()">运行</el-button>
       </el-form-item>
-      <el-form-item label="执行进度">
+      <el-form-item label="脚本日志">
         <div class="console" v-html="html" />
       </el-form-item>
     </el-form>

@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">JTest Tool</h3>
       </div>
 
       <el-form-item prop="username">
@@ -13,7 +13,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="请输入用户名"
           name="username"
           type="text"
           tabindex="1"
@@ -30,7 +30,7 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="请输入密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -41,11 +41,15 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+      <!--      <div class="tips">-->
+      <!--        <span style="margin-right:20px;">用户名: admin</span>-->
+      <!--        <span> 密码: 任意</span>-->
+      <!--      </div>-->
+
+      <div class="bottom-container">
+        <el-link class="bottom" target="_blank" href="https://beian.miit.gov.cn/">沪ICP备2021036508号-1</el-link>
       </div>
 
     </el-form>
@@ -53,29 +57,31 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+// import { validUsername } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
+      // 注销了前端的校验,交给后端完成
+      // if (!validUsername(value)) {
+      //   callback(new Error('Please enter the correct user name'))
+      // } else {
+      //   callback()
+      // }
+      callback()
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码长度不能小于6位'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '吉翔',
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -93,16 +99,6 @@ export default {
       },
       immediate: true
     }
-  },
-  created() {
-    this.$store.dispatch('user/login', this.loginForm)
-      .then(() => {
-        this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-        this.loading = false
-      })
-      .catch(() => {
-        this.loading = false
-      })
   },
   methods: {
     showPwd() {
@@ -234,6 +230,19 @@ $light_gray:#eee;
     }
   }
 
+  .bottom-container {
+    position: relative;
+    text-align: center;
+
+    .bottom {
+      font-size: 12px;
+      color: $light_gray;
+      margin: 0px auto 40px auto;
+      vertical-align: center;
+      font-weight: bold;
+      line-height: 400px;
+    }
+  }
   .show-pwd {
     position: absolute;
     right: 10px;
@@ -244,4 +253,28 @@ $light_gray:#eee;
     user-select: none;
   }
 }
+.word-v-middle{
+
+  margin-bottom: 0;
+
+  font-size: 12px;
+
+  min-height: 31px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  height: 31px;
+
+  margin-top: 5px;
+
+  color: #87878a;
+
+  white-space: normal;
+
+}
+
 </style>

@@ -1,8 +1,8 @@
 <template>
   <el-row :gutter="40" class="case-list">
     <el-col :xs="24" :sm="24" :lg="24">
-      <el-table v-loading="listLoading" :data="list" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit @sort-change="sortChange">
-        <el-table-column label="ID" prop="id" sortable="custom" align="center" width="70" :class-name="getSortClass('id')">
+      <el-table v-loading="listLoading" :data="list" :row-class-name="tableRowClassName" element-loading-text="Loading" border fit>
+        <el-table-column label="ID" prop="id" align="center" width="70">
           <template slot-scope="scope">
             {{ scope.row.id }}
           </template>
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import { list, detail, testcaseList } from '@/api/report'
+import { latestCaseList, detail } from '@/api/report'
 import { parseTime } from '@/utils'
 
 export default {
@@ -166,7 +166,7 @@ export default {
     }
   },
   created() {
-    this.getCaseList()
+    this.fetchData()
   },
   methods: {
     // 打开用例详情页
@@ -191,10 +191,10 @@ export default {
         return 'danger-row'
       }
     },
-    // 用例列表数据 (废弃暂未使用,无排序功能)
+    // TODO 用例列表数据 (废弃暂未使用,无排序功能)
     fetchData() {
       this.listLoading = true
-      list().then(response => {
+      latestCaseList().then(response => {
         this.list = response.data
         this.listLoading = false
       }).catch(
@@ -204,48 +204,48 @@ export default {
       )
     },
     // 获取用例列表(可排序筛选)
-    getCaseList() {
-      this.listLoading = true
-      testcaseList(this.listQuery).then(response => {
-        this.list = response.data.list
-        this.listLoading = false
-      }).catch(
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      )
-    },
+    // getCaseList() {
+    //   this.listLoading = true
+    //   testcaseList(this.listQuery).then(response => {
+    //     this.list = response.data.list
+    //     this.listLoading = false
+    //   }).catch(
+    //     setTimeout(() => {
+    //       this.listLoading = false
+    //     }, 1.5 * 1000)
+    //   )
+    // },
     // 转换时间格式
     dateFormat(timestamp) {
       return parseTime(timestamp, '{y}-{m}-{d} {h}:{i}:{s}')
     },
     // 排序
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
-    handleFilter() {
-      this.listQuery.pageNum = 1
-      this.getCaseList()
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}`
-        ? 'ascending'
-        : sort === `-${key}`
-          ? 'descending'
-          : ''
-    },
+    // sortChange(data) {
+    //   const { prop, order } = data
+    //   if (prop === 'id') {
+    //     this.sortByID(order)
+    //   }
+    // },
+    // sortByID(order) {
+    //   if (order === 'ascending') {
+    //     this.listQuery.sort = '+id'
+    //   } else {
+    //     this.listQuery.sort = '-id'
+    //   }
+    //   this.handleFilter()
+    // },
+    // handleFilter() {
+    //   this.listQuery.pageNum = 1
+    //   this.getCaseList()
+    // },
+    // getSortClass: function(key) {
+    //   const sort = this.listQuery.sort
+    //   return sort === `+${key}`
+    //     ? 'ascending'
+    //     : sort === `-${key}`
+    //       ? 'descending'
+    //       : ''
+    // },
     // 筛选结果
     filterTag(value, row) {
       let status

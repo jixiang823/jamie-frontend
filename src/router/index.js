@@ -85,7 +85,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'ManualTest',
         component: () => import('@/views/form/ManualTest.vue'),
-        meta: { title: '在线调试', icon: 'form' }
+        meta: { title: '手动运行', icon: 'form' }
       }
     ]
   },
@@ -98,6 +98,18 @@ export const constantRoutes = [
         name: 'AutoTest',
         component: () => import('@/views/form/AutoTest.vue'),
         meta: { title: '自动化配置', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/test-result-total',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'TestResultTotal',
+        component: () => import('@/views/form/TestResultTotal.vue'),
+        meta: { title: '测试结果', icon: 'form' }
       }
     ]
   },

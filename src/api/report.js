@@ -8,17 +8,18 @@ export function info() {
   })
 }
 
-// 获取最新用例信息列表(表单)
-export function list() {
+// TODO 未使用 放在dashboard 获取最新用例信息列表(表单)
+export function latestCaseList() {
   return request({
     url: '/jmeter/report/list/latest',
     method: 'get'
   })
 }
 
-export function testcaseList(data) {
+// TODO 放在表单页 分页多条件查询
+export function totalCaseList(data) {
   return request({
-    url: '/jmeter/report/list',
+    url: '/jmeter/report/list/total',
     method: 'post',
     data
   })

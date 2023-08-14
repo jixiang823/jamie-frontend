@@ -1,75 +1,63 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <div class="title-container">
-        <h3 class="title">Jamie</h3>
-      </div>
-      <el-form-item prop="username">
+    <el-form ref="registerForm" :model="registerForm" class="login-form">
+      <el-form-item prop="username1">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input ref="username" v-model="loginForm.username" placeholder="请输入用户名" name="username" type="text" tabindex="1" auto-complete="on" />
+        <el-input ref="username" v-model="registerForm.username" placeholder="用户名" type="text" tabindex="1" />
       </el-form-item>
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" placeholder="请输入密码" name="password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin" />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
-      <el-button :loading="loading" type="warning" style="width:100%;margin-bottom:30px;margin-left:0" @click="$router.push('/register')">注册</el-button>
-      <div class="bottom-container">
-        <el-link class="bottom" target="_blank" href="https://beian.miit.gov.cn/">沪ICP备2021036508号-1</el-link>
-      </div>
+      <el-tooltip v-model="capsTooltip" content="大写锁定已打开" placement="right" manual>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input :key="passwordType" ref="password" v-model="registerForm.password" :type="passwordType" placeholder="密码" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false" />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
+      </el-tooltip>
+      <el-tooltip v-model="recapsTooltip" content="大写锁定已打开" placement="right" manual>
+        <el-form-item prop="password2">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input :key="password2Type" ref="password2" v-model="registerForm.password2" :type="password2Type" placeholder="确认密码" tabindex="3" autocomplete="on" @keyup.native="recheckCapslock" @blur="recapsTooltip = false" />
+          <span class="show-pwd" @click="showPwd2">
+            <svg-icon :icon-class="password2Type === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
+      </el-tooltip>
+      <el-button type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
+      <el-button type="info" style="width:100%;margin-bottom:30px;margin-left:0" @click="$router.push('/login')">返回</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
-// import { validUsername } from '@/utils/validate'
-
+import { register } from '@/api/user'
 export default {
-  name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      // 注销了前端的校验,交给后端完成
-      // if (!validUsername(value)) {
-      //   callback(new Error('Please enter the correct user name'))
-      // } else {
-      //   callback()
-      // }
-      callback()
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码长度不能小于6位'))
-      } else {
-        callback()
-      }
-    }
     return {
-      loginForm: {},
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+      loginForm: {
+
       },
       loading: false,
-      passwordType: 'password',
-      redirect: undefined
-    }
-  },
-  watch: {
-    $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+      registerForm: {
+        username: undefined,
+        password: undefined,
+        password2: undefined
       },
-      immediate: true
+      capsTooltip: false,
+      passwordType: 'password',
+      recapsTooltip: false,
+      password2Type: 'password',
+      verifycodeImg: ''
     }
   },
   methods: {
+
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -80,20 +68,39 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
+    checkCapslock(e) {
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    showPwd2() {
+      if (this.password2Type === 'password') {
+        this.password2Type = ''
+      } else {
+        this.password2Type = 'password'
+      }
+      this.$nextTick(() => {
+        this.$refs.password2.focus()
+      })
+    },
+    recheckCapslock(e) {
+      const { key } = e
+      this.recapsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    handleRegister() {
+      this.loading = true
+      register(this.registerForm).then(response => {
+        if (response.code === 20000) {
+          this.$message({
+            message: '注册成功',
+            type: 'success',
+            duration: 2000
           })
-        } else {
-          console.log('error submit!!')
-          return false
+          this.$router.push('/login')
         }
+      }).catch(() => {
+        setTimeout(() => {
+          this.loading = false
+        }, 3000)
       })
     }
   }

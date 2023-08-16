@@ -22,8 +22,10 @@ export default {
   data() {
     return {
       ansi: undefined, // 执行脚本后展示的日志
+      userId: undefined, // WebSocket的url
       content: '', // 日志内容
       form: {
+        userId: '',
         scriptPath: ''
       },
       rules: [
@@ -55,7 +57,8 @@ export default {
   },
   methods: {
     initWebSocket: function() {
-      this.websocket = new WebSocket('ws://localhost:9123/websocket') // 建立连接
+      this.userId = JSON.parse(sessionStorage.getItem('userInfo')).id
+      this.websocket = new WebSocket('ws://localhost:9123/websocket/' + this.userId) // 建立连接
       this.websocket.onopen = this.openWebSocket
       this.websocket.onerror = this.errorWebSocket
       this.websocket.onmessage = this.messageWebSocket

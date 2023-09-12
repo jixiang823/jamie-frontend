@@ -30,7 +30,6 @@ export default {
         batchNo: '',
         featureName: '',
         buildEnv: '',
-        buildType: '',
         caseNum: '',
         newlyFailNum: '',
         keepFailingNum: '',
@@ -60,7 +59,6 @@ export default {
         this.textInfoData.batchNo = response.data.batchNo
         this.textInfoData.featureName = response.data.featureName
         this.textInfoData.buildEnv = response.data.buildEnv
-        this.textInfoData.buildType = response.data.buildType
         this.textInfoData.caseNum = response.data.caseNum
         this.pieChartData.casePassNum = response.data.casePassNum
         this.pieChartData.caseFailNum = response.data.caseFailNum

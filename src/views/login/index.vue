@@ -21,9 +21,6 @@
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
       <el-button :loading="loading" type="warning" style="width:100%;margin-bottom:30px;margin-left:0" @click="$router.push('/register')">注册</el-button>
-      <div class="bottom-container">
-        <el-link class="bottom" target="_blank" href="https://beian.miit.gov.cn/">沪ICP备2021036508号-1</el-link>
-      </div>
     </el-form>
   </div>
 </template>
@@ -191,25 +188,12 @@ $light_gray:#eee;
     position: relative;
 
     .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
+      font-size: 108px;
+      font-family: "Savoye LET";
+      color: thistle;
+      margin: 0px auto 20px auto;
       text-align: center;
       font-weight: bold;
-    }
-  }
-
-  .bottom-container {
-    position: relative;
-    text-align: center;
-
-    .bottom {
-      font-size: 12px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      vertical-align: center;
-      font-weight: bold;
-      line-height: 300px;
     }
   }
   .show-pwd {

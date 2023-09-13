@@ -17,8 +17,8 @@
           <router-link to="/profile/index">
             <el-dropdown-item>个人信息</el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
+          <a target="_blank" href="https://gitee.com/jixiang823/projects?tag=jamie">
+            <el-dropdown-item>Gitee</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出</span>

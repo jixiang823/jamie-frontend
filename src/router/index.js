@@ -183,7 +183,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'https://gitee.com/jixiang823/projects?tag=JMeter-Report',
+        path: 'https://gitee.com/jixiang823/projects?tag=jamie',
         meta: { title: '项目地址', icon: 'link' }
       }
     ]

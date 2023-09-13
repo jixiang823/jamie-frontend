@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 启动定时任务
 export function startTask(data) {
   return request({
-    url: '/jmeter/scheduled/start',
+    url: '/scheduled/start',
     method: 'post',
     data
   })
@@ -12,7 +12,7 @@ export function startTask(data) {
 // 暂停定时任务
 export function stopTask() {
   return request({
-    url: '/jmeter/scheduled/stop',
+    url: '/scheduled/stop',
     method: 'post'
   })
 }
@@ -20,7 +20,7 @@ export function stopTask() {
 // 重启定时任务
 export function restartTask(data) {
   return request({
-    url: '/jmeter/scheduled/restart',
+    url: '/scheduled/restart',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function restartTask(data) {
 // 获取定时任务信息
 export function queryTask() {
   return request({
-    url: '/jmeter/scheduled/query',
+    url: '/scheduled/query',
     method: 'get'
   })
 }

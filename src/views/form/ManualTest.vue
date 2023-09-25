@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px">
       <el-form-item label="脚本路径" :rules="rules">
-        <el-input v-model="form.scriptPath" placeholder="请输入脚本所在服务器的绝对路径" />
+        <el-input v-model="form.scriptPath" placeholder="请输入脚本所在服务器的绝对路径,如 /root/scripts/demo.jmx" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="runScript()">运行</el-button>

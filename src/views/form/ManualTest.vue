@@ -1,13 +1,22 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="脚本路径" :rules="rules">
-        <el-input v-model="form.scriptPath" placeholder="请输入脚本所在服务器的绝对路径,如 /root/scripts/demo.jmx" />
+      <el-form-item label="提交脚本" :rules="rules">
+        <el-input placeholder="请提交jmx格式文件" v-model="textarea" style="width: 50%">
+          <el-button slot="append" icon="el-icon-folder-opened" @click="openFile"></el-button>
+        </el-input>
+        <input type="file" name="filename" id="open" style="display: none" @change="changeFile"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="uploadFile()">上传到服务器</el-button>
+      </el-form-item>
+      <el-form-item label="运行脚本" :rules="rules">
+        <el-input v-model="form.scriptPath" placeholder="输入脚本绝对路径 如/home/scripts/demo.jmx" style="width: 50%"/>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="runScript()">运行</el-button>
       </el-form-item>
-      <el-form-item label="脚本日志">
+      <el-form-item label="运行日志">
         <div class="console" v-html="html" />
       </el-form-item>
     </el-form>
@@ -16,14 +25,17 @@
 
 <script>
 
-import { run } from '@/api/script'
+import { run, upload } from '@/api/script'
 import AnsiUp from 'ansi_up'
 export default {
   data() {
     return {
+      textarea: "",
+      file: "",
       ansi: undefined, // 执行脚本后展示的日志
       userId: undefined, // WebSocket的url
       content: '', // 日志内容
+      scriptLocalPath: '', // 脚本本地路径
       form: {
         userId: '',
         scriptPath: ''
@@ -79,6 +91,45 @@ export default {
     // 关闭连接
     closeWebSocket: function(e) {
       console.log('connection closed (' + e.code + ')')
+    },
+    // 选择文件
+    openFile() {
+      document.getElementById("open").click();
+    },
+    // 转换文件
+    changeFile(event) {
+      let file = event.target.files[0]; //获取上传的文件
+      this.file = file
+      this.textarea = file.name
+    },
+    // 上传文件
+    uploadFile() {
+      this.loading = true
+      let formData = new FormData()
+      formData.append('file', this.file)
+      this.$confirm('确认上传此脚本?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        upload(formData).then(response => {
+          if (response.code === 20000) {
+              this.$message({
+                  message: '脚本上传成功!',
+                  type: 'success'
+              })
+          } else {
+              this.$message({
+                  message: '脚本上传失败!',
+                  type: 'error'
+              })
+          }
+        }).catch(() => {
+          setTimeout(() => {
+            this.loading = false
+          }, 1000)
+        })
+      })
     },
     runScript() {
       this.loading = true

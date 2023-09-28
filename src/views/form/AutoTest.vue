@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px">
       <el-form-item label="corn表达式">
-        <el-input v-model="form.corn" placeholder="0 0 1 * * ?  每天凌晨1点执行一次"></el-input>
+        <el-input v-model="form.corn" placeholder="0 0 1 * * ?  每天凌晨1点执行一次" style="width: 50%"></el-input>
       </el-form-item>
       <el-form-item label="启用定时任务">
         <el-switch v-model="form.status"></el-switch>

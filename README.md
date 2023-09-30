@@ -52,7 +52,7 @@ Password: 123456
 1. 安装JMeter (过程略,自行百度)
    https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.2.zip
 2. 引入后端监听器
-   * 下载监听器插件 https://gitee.com/jixiang823/jamie-report-backend-listener/raw/main/jamie-report-backend-listener.jar
+   * 下载监听器插件: https://gitee.com/jixiang823/jamie-report-backend-listener/raw/main/jamie-report-backend-listener.jar
    * 将`jamie-report-backend-listener.jar`放置在`JMeter`的`/lib/ext`目录下.
 3. 配置后端监听器
     * 新建`.jmx`脚本, `添加` -> `监听器` -> `后端监听器`, 选择 `JamieReportBackendListenerClient`

@@ -3,7 +3,8 @@
 ***Jamie***是一款基于`JMeter + Spring Boot + Vue Admin Template`的API自动化测试框架, 通过`Docker`一键安装部署. 框架具备提交脚本、手动/自动化执行测试脚本、生成测试报告、导出测试结果等功能.
 ![000](https://github.com/jixiang823/jamie-frontend/assets/41544435/35315c43-5be7-4dd4-8bb2-88cb01f168e0)
 ## 开源地址
-https://gitee.com/jixiang823/projects?tag=jamie
+* https://gitee.com/jixiang823/projects?tag=jamie
+* https://github.com/jixiang823
 ## 技术栈
 *Docker | CentOS 7 | Java 8 | Springboot 2.7.4 | MySQL 5.7 | Vue 2 | JMeter 5.6.2*
 ![001](https://github.com/jixiang823/jamie-frontend/assets/41544435/accac977-a653-4fa3-83f6-878fbbf4f402)
